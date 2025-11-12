@@ -187,7 +187,81 @@ section h3 {
   margin-top: auto;
   padding-top: 10px;
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Social sharing buttons */
+.social-share-buttons {
+  display: flex;
   justify-content: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.share-button {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.share-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.share-button.facebook {
+  background-color: #1877f2;
+  color: white;
+  border-color: #1877f2;
+}
+
+.share-button.facebook:hover {
+  background-color: #166fe5;
+}
+
+.share-button.twitter {
+  background-color: #1da1f2;
+  color: white;
+  border-color: #1da1f2;
+}
+
+.share-button.twitter:hover {
+  background-color: #1a91da;
+}
+
+.share-button.email {
+  background-color: #ea4335;
+  color: white;
+  border-color: #ea4335;
+}
+
+.share-button.email:hover {
+  background-color: #d93025;
+}
+
+.share-button.native {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.share-button.native:hover {
+  background-color: var(--primary-light);
+}
+
+.share-icon {
+  font-size: 1rem;
 }
 
 /* Activity Tag */

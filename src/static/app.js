@@ -568,6 +568,26 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
+        <div class="social-share-buttons">
+          <button class="share-button facebook" data-activity="${name}" data-platform="facebook" title="Share on Facebook">
+            <span class="share-icon">📘</span>
+          </button>
+          <button class="share-button twitter" data-activity="${name}" data-platform="twitter" title="Share on Twitter">
+            <span class="share-icon">🐦</span>
+          </button>
+          <button class="share-button email" data-activity="${name}" data-platform="email" title="Share via Email">
+            <span class="share-icon">📧</span>
+          </button>
+          ${
+            navigator.share
+              ? `
+            <button class="share-button native" data-activity="${name}" data-platform="native" title="Share">
+              <span class="share-icon">📤</span>
+            </button>
+          `
+              : ""
+          }
+        </div>
       </div>
     `;
 
@@ -586,6 +606,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Add click handlers for share buttons
+    const shareButtons = activityCard.querySelectorAll(".share-button");
+    shareButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const activityName = button.dataset.activity;
+        const platform = button.dataset.platform;
+        handleShare(activityName, details, platform);
+      });
+    });
 
     activitiesList.appendChild(activityCard);
   }
@@ -797,6 +827,62 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     );
+  }
+
+  // Handle social sharing
+  function handleShare(activityName, details, platform) {
+    // Create share content
+    const shareUrl = window.location.href;
+    const shareTitle = `${activityName} - Mergington High School`;
+    const shareText = `Check out this activity: ${activityName}\n${details.description}\nSchedule: ${formatSchedule(details)}`;
+    
+    // Encode URL components
+    const encodedUrl = encodeURIComponent(shareUrl);
+    const encodedTitle = encodeURIComponent(shareTitle);
+    const encodedText = encodeURIComponent(shareText);
+    
+    let shareLink = '';
+    
+    switch (platform) {
+      case 'facebook':
+        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+        window.open(shareLink, '_blank', 'width=600,height=400');
+        showMessage('Opening Facebook share...', 'info');
+        break;
+        
+      case 'twitter':
+        shareLink = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+        window.open(shareLink, '_blank', 'width=600,height=400');
+        showMessage('Opening Twitter share...', 'info');
+        break;
+        
+      case 'email':
+        const emailSubject = encodeURIComponent(shareTitle);
+        const emailBody = encodeURIComponent(`${shareText}\n\nView more details: ${shareUrl}`);
+        shareLink = `mailto:?subject=${emailSubject}&body=${emailBody}`;
+        window.location.href = shareLink;
+        showMessage('Opening email client...', 'info');
+        break;
+        
+      case 'native':
+        if (navigator.share) {
+          navigator.share({
+            title: shareTitle,
+            text: shareText,
+            url: shareUrl
+          })
+          .then(() => {
+            showMessage('Shared successfully!', 'success');
+          })
+          .catch((error) => {
+            if (error.name !== 'AbortError') {
+              console.error('Error sharing:', error);
+              showMessage('Failed to share', 'error');
+            }
+          });
+        }
+        break;
+    }
   }
 
   // Show message function
